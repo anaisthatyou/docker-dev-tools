@@ -11,6 +11,8 @@ services:
             - ./certs:/etc/certs
             - ./nginx:/etc/nginx/conf.d
             - ./nginx/logs:/var/log/nginx
+        networks:
+            - default
     
     ## Portainer - Docker visualisation and management
     portainer:
@@ -39,7 +41,20 @@ services:
         networks:
             - default
             - core_default
-
+                
+    ## json-server - mock server for simple testing
+    json-server:
+        image: node:alpine
+        hostname: json-server
+        command: npx json-server --watch db.json --port 80 --host 0.0.0.0
+        working_dir: /home/json-server
+        expose:
+            - "80"
+        volumes:
+          - ./json-server:/home/json-server
+        networks:
+            - default
+                    
 volumes:
     pgadmin-data:
     portainer_data:
