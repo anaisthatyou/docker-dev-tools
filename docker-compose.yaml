@@ -3,6 +3,7 @@ version: '3'
 services:
     nginx:
         image: nginx:1.15-alpine
+        container_name: nginx
         hostname: nginxo
         ports:
             - "80:80"
@@ -11,12 +12,11 @@ services:
             - ./certs:/etc/certs
             - ./nginx:/etc/nginx/conf.d
             - ./nginx/logs:/var/log/nginx
-        networks:
-            - default
     
     ## Portainer - Docker visualisation and management
     portainer:
         image: portainer/portainer
+        container_name: portainer
         hostname: portainer
         restart: always
         volumes:
@@ -31,6 +31,7 @@ services:
     pgadmin:
         image: dpage/pgadmin4:4.24
         hostname: pgadmin
+        container_name: pgadmin
         restart: always
         environment:
             PGADMIN_DEFAULT_EMAIL: pgadmin@harrison.com
@@ -46,6 +47,7 @@ services:
     json-server:
         image: node:alpine
         hostname: json-server
+        container_name: json-server
         command: npx json-server --watch db.json --port 80 --host 0.0.0.0
         working_dir: /home/json-server
         expose:
@@ -54,6 +56,7 @@ services:
           - ./json-server:/home/json-server
         networks:
             - default
+
                     
 volumes:
     pgadmin-data:
