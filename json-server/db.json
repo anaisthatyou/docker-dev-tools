@@ -12,8 +12,8 @@
     "posts": [
         {
             "id": 1,
-            "title": "Title of the post",
-            "authorId": 1
+            "title": "Information about a subject: vol 1 (in progress)",
+            "userId": 1
         }
     ],
     "comments": [
@@ -21,7 +21,7 @@
             "id": 1,
             "body": "This is all wrong 😊",
             "postId": 1,
-            "authorId": 2
+            "userId": 2
         }
     ]
 }
