@@ -25,7 +25,7 @@ services:
       - portainer_data:/data
     networks:
       - default
-      # Add networks that need bridging here
+      - aa-plumbus_default
 
   ## PG Admin 4 - SQL explorer and Visualization
   pgadmin:
@@ -41,13 +41,13 @@ services:
       - pgadmin-data:/var/lib/pgadmin
     networks:
       - default
-      # Add networks that need bridging here
+      - aa-plumbus_default
 
   ## json-server - mock server for simple testing
-  json-server:
+  mock:
     image: node:alpine
-    hostname: json-server
-    container_name: json-server
+    hostname: mock
+    container_name: json-server-mock
     command: npx json-server --watch db.json --port 80 --host 0.0.0.0
     working_dir: /home/json-server
     expose:
@@ -60,5 +60,7 @@ services:
 volumes:
   pgadmin-data:
   portainer_data:
-# networks:
-# Add networks that need bridging here
+
+networks:
+  aa-plumbus_default:
+    external: true
