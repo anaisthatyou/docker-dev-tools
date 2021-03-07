@@ -4,44 +4,53 @@ services:
   nginx:
     image: nginx:1.15-alpine
     container_name: nginx
-    hostname: nginxo
-    ports:
-      - '80:80'
-      - '443:443'
+    restart: always
+    hostname: nginx
+
     volumes:
       - ./certs:/etc/certs
       - ./nginx:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx
 
+    ports:
+      - '80:80'
+      - '443:443'
+
   ## Portainer - Docker visualisation and management
   portainer:
     image: portainer/portainer
     container_name: portainer
-    hostname: portainer
     restart: always
+
+    hostname: portainer
+    networks:
+      - default
+      - shared
+
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
-      - portainer_data:/data
-    networks:
-      - default
-      - aa-plumbus_default
+      - portainer-data:/data
+
 
   ## PG Admin 4 - SQL explorer and Visualization
   pgadmin:
     image: dpage/pgadmin4:4.24
-    hostname: pgadmin
     container_name: pgadmin
     restart: always
+
     environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin@harrison.com
-      PGADMIN_DEFAULT_PASSWORD: yvgqen8r4VpAuQegP9NurPFPvePQVE
+      PGADMIN_DEFAULT_EMAIL: admin@harrison.io
+      PGADMIN_DEFAULT_PASSWORD: password
       PGADMIN_LISTEN_PORT: 80
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
+
+    hostname: pgadmin
     networks:
       - default
-      - aa-plumbus_default
+      - shared
+      
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
 
   ## json-server - mock server for simple testing
   mock:
@@ -50,17 +59,22 @@ services:
     container_name: json-server-mock
     command: npx json-server --watch db.json --port 80 --host 0.0.0.0
     working_dir: /home/json-server
+
     expose:
       - '80'
+
     volumes:
       - ./json-server:/home/json-server
-    networks:
-      - default
 
 volumes:
   pgadmin-data:
-  portainer_data:
+    name: pgadmin-data
+  portainer-data:
+    name: portainer-data
 
 networks:
-  aa-plumbus_default:
+  default:
+    name: dev-tools
+
+  shared:
     external: true

@@ -1,3 +1,7 @@
-certs
-nginx/logs
+# General
+.env
 .DS_Store
+
+# dev-tools
+dev-tools/certs
+dev-tools/nginx/logs
