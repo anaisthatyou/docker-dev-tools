@@ -1,0 +1,33 @@
+version: '3'
+
+# Compose file to create debugger container and attach to networks. 
+
+services:
+  
+  debugger:
+    container_name: debugger
+    image: debugger:latest
+    build:
+      context: ./debugger
+
+    tty: true
+    stdin_open: true
+    working_dir: /home/root
+    
+    hostname: debugger
+    networks: 
+      - dev-tools
+      - ldap
+      - shared
+
+    volumes:
+      - ./debugger/mount:/home/root/mount
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  dev-tools:
+    external: true
+  ldap:
+    external: true
+  shared:
+    external: true

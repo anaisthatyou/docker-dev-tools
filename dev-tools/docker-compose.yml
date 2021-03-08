@@ -15,10 +15,32 @@ services:
     ports:
       - '80:80'
       - '443:443'
+  
+  # LDAP Admin web client
+  ldap-admin:
+    image: wheelybird/ldap-user-manager:latest
+    container_name: ldap-admin
+    restart: always
+
+    hostname: ldap-admin
+    networks:
+      - default
+      - ldap
+
+    environment:
+      SERVER_HOSTNAME: ldap-admin.dev
+      SITE_NAME: 'local development ldap'
+      NO_HTTPS: 'true'
+      LDAP_URI: ldap://openldap:1389
+      LDAP_BASE_DN: dc=openldap
+      LDAP_ADMINS_GROUP: admins
+      LDAP_ADMIN_BIND_DN: cn=changeme,dc=openldap
+      LDAP_ADMIN_BIND_PWD: changeme
+      LDAP_IGNORE_CERT_ERRORS: 'true'
 
   ## Portainer - Docker visualisation and management
   portainer:
-    image: portainer/portainer
+    image: portainer/portainer-ce:2.1.1
     container_name: portainer
     restart: always
 
@@ -26,6 +48,7 @@ services:
     networks:
       - default
       - shared
+      - ldap
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -35,22 +58,32 @@ services:
 
   ## PG Admin 4 - SQL explorer and Visualization
   pgadmin:
-    image: dpage/pgadmin4:4.24
+    image: dpage/pgadmin4:5.0
     container_name: pgadmin
-    restart: always
-
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@harrison.io
-      PGADMIN_DEFAULT_PASSWORD: password
-      PGADMIN_LISTEN_PORT: 80
+    restart: always   
 
     hostname: pgadmin
     networks:
       - default
       - shared
-      
+      - ldap
+
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@harrison.io
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 80
+      PGADMIN_CONFIG_AUTHENTICATION_SOURCES: "['ldap', 'internal']"
+      PGADMIN_CONFIG_LDAP_SERVER_URI: "'ldap://openldap:1389'"
+      PGADMIN_CONFIG_LDAP_CONNECTION_TIMEOUT: 30
+      PGADMIN_CONFIG_LDAP_USE_STARTTLS: 'False'
+      PGADMIN_CONFIG_LDAP_BASE_DN: "'ou=people,dc=openldap'"
+      PGADMIN_CONFIG_LDAP_AUTO_CREATE_USER: 'True'
+      PGADMIN_CONFIG_LDAP_USERNAME_ATTRIBUTE: "'uid'"
+      PGADMIN_CONFIG_LDAP_SEARCH_SCOPE: "'SUBTREE'"
+      PGADMIN_CONFIG_LDAP_SEARCH_FILTER: "'(cn=*)'"
 
   ## json-server - mock server for simple testing
   mock:
@@ -75,6 +108,9 @@ volumes:
 networks:
   default:
     name: dev-tools
+
+  ldap:
+    external: true
 
   shared:
     external: true

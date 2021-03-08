@@ -5,3 +5,4 @@
 # dev-tools
 dev-tools/certs
 dev-tools/nginx/logs
+dev-tools/debugger/mount
