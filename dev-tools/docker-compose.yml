@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   nginx:
@@ -13,8 +13,8 @@ services:
       - ./nginx/logs:/var/log/nginx
 
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
 
   # LDAP Admin web client
   ldap-admin:
@@ -29,14 +29,16 @@ services:
 
     environment:
       SERVER_HOSTNAME: ldap-admin.dev
-      SITE_NAME: "local development ldap"
-      NO_HTTPS: "true"
+      ORGANISATION_NAME: anana.dev
+      SITE_NAME: 'Ana: Experiments in LDAP'
+      NO_HTTPS: 'true'
       LDAP_URI: ldap://openldap:1389
-      LDAP_BASE_DN: dc=openldap
+      LDAP_BASE_DN: dc=ana,dc=dev
       LDAP_ADMINS_GROUP: admins
-      LDAP_ADMIN_BIND_DN: cn=changeme,dc=openldap
+      LDAP_ADMIN_BIND_DN: cn=admin,dc=ana,dc=dev
       LDAP_ADMIN_BIND_PWD: changeme
-      LDAP_IGNORE_CERT_ERRORS: "true"
+      LDAP_IGNORE_CERT_ERRORS: 'true'
+      LDAP_DEBUG: 'true'
 
   ## Portainer - Docker visualisation and management
   portainer:
@@ -77,9 +79,9 @@ services:
       PGADMIN_CONFIG_AUTHENTICATION_SOURCES: "['ldap', 'internal']"
       PGADMIN_CONFIG_LDAP_SERVER_URI: "'ldap://openldap:1389'"
       PGADMIN_CONFIG_LDAP_CONNECTION_TIMEOUT: 30
-      PGADMIN_CONFIG_LDAP_USE_STARTTLS: "False"
-      PGADMIN_CONFIG_LDAP_BASE_DN: "'ou=people,dc=openldap'"
-      PGADMIN_CONFIG_LDAP_AUTO_CREATE_USER: "True"
+      PGADMIN_CONFIG_LDAP_USE_STARTTLS: 'False'
+      PGADMIN_CONFIG_LDAP_BASE_DN: "'ou=people,dc=ana,dc=dev'"
+      PGADMIN_CONFIG_LDAP_AUTO_CREATE_USER: 'True'
       PGADMIN_CONFIG_LDAP_USERNAME_ATTRIBUTE: "'uid'"
       PGADMIN_CONFIG_LDAP_SEARCH_SCOPE: "'SUBTREE'"
       PGADMIN_CONFIG_LDAP_SEARCH_FILTER: "'(cn=*)'"
@@ -93,7 +95,7 @@ services:
     working_dir: /home/json-server
 
     expose:
-      - "80"
+      - '80'
 
     volumes:
       - ./json-server:/home/json-server
