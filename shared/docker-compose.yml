@@ -1,27 +1,26 @@
-version: '3.9'
+version: "3.9"
 
 services:
-
   openldap:
-      image: bitnami/openldap:2
-      hostname: openldap
-      container_name: ldap
-      
-      ports:
-        - 1389:1389
-        - 1636:1636
-        
-      environment:
-        LDAP_ROOT: dc=analdap
-        LDAP_ADMIN_USERNAME: changeme
-        LDAP_ADMIN_PASSWORD: changeme
-        ALLOW_EMPTY_PASSWORD: 'yes'
+    image: bitnami/openldap:2
+    hostname: openldap
+    container_name: ldap
 
-      networks:
-        - ldap
+    ports:
+      - 1389:1389
+      - 1636:1636
 
-      volumes:
-        - openldap-data:/bitnami/openldap
+    environment:
+      LDAP_ROOT: dc=analdap
+      LDAP_ADMIN_USERNAME: changeme
+      LDAP_ADMIN_PASSWORD: changeme
+      ALLOW_EMPTY_PASSWORD: "yes"
+
+    networks:
+      - ldap
+
+    volumes:
+      - openldap-data:/bitnami/openldap
 
   postgres:
     image: postgres
@@ -53,6 +52,6 @@ networks:
 volumes:
   postgres-data:
     name: postgres-data
-    
+
   openldap-data:
     name: openldap-data

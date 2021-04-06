@@ -1,9 +1,8 @@
-version: '3'
+version: "3"
 
-# Compose file to create debugger container and attach to networks. 
+# Compose file to create debugger container and attach to networks.
 
 services:
-  
   debugger:
     container_name: debugger
     image: debugger:latest
@@ -13,9 +12,9 @@ services:
     tty: true
     stdin_open: true
     working_dir: /home/root
-    
+
     hostname: debugger
-    networks: 
+    networks:
       - dev-tools
       - ldap
       - shared
